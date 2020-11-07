@@ -19,13 +19,19 @@ let date = CURRENT_DATE;
 
 console.log(`year : ${year}, month : ${month}, day : ${day}, date : ${date}`);
 
+function currentCheck(){
+    return (CURRENT_YEAR==year && CURRENT_MONTH==month)?true:false;
+}
 prev.addEventListener("click",function(){
     month--;
     if(month<1){
         month=12;
         year--;
     }
-    // if(CURRENT_YEAR==year && CURRENT_MONTH==month)
+    if(currentCheck()){
+        date_day.classList.remove("hidden");
+    }else date_day.classList.add("hidden");
+
     init();
 });
 post.addEventListener("click",function(){
@@ -34,6 +40,10 @@ post.addEventListener("click",function(){
         month=1;
         year++;
     }
+    if(currentCheck()){
+        date_day.classList.remove("hidden");
+    }else date_day.classList.add("hidden");
+
     init();
 });
 function showDetails(event){
@@ -78,6 +88,13 @@ function setDates() {
         const link = document.createElement("a");
         link.innerText=dateCnt;
         link.addEventListener("click",showDetails);
+        let days_id = "";
+        if(currentCheck() && CURRENT_DATE==dateCnt){
+            days_id="currentDate";
+        }else{
+            days_id="";
+        }
+        days[i].id=days_id;
         days[i].appendChild(link);
         dateCnt++;
     }
