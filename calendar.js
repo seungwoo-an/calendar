@@ -1,15 +1,22 @@
 const today = new Date();
-
 const year_month = document.getElementById("year_month");
 const date_day = document.getElementById("date_day");
 const dayOfWeek = ["일요일", "월요일", "화요일", "수요일", "목요일", "금요일", "토요일"];
 const prev = document.getElementById("prev");
 const post = document.getElementById("post");
+const days = document.getElementsByClassName("days");
+const container = document.getElementById("container");
 
-let year = today.getFullYear();
-let month = today.getMonth() + 1;
-let day = dayOfWeek[today.getDay()];
-let date = today.getDate();
+const CURRENT_YEAR = today.getFullYear();
+const CURRENT_MONTH = today.getMonth() + 1;
+const CURRENT_DAY = dayOfWeek[today.getDay()];
+const CURRENT_DATE = today.getDate();
+
+let year = CURRENT_YEAR;
+let month = CURRENT_MONTH;
+let day = CURRENT_DAY;
+let date = CURRENT_DATE;
+
 console.log(`year : ${year}, month : ${month}, day : ${day}, date : ${date}`);
 
 prev.addEventListener("click",function(){
@@ -18,6 +25,7 @@ prev.addEventListener("click",function(){
         month=12;
         year--;
     }
+    // if(CURRENT_YEAR==year && CURRENT_MONTH==month)
     init();
 });
 post.addEventListener("click",function(){
@@ -63,7 +71,7 @@ function setDates() {
     const dates = getDates(month);
     const endDay = new Date(year,month-1,dates).getDay();
     const startDay = getStartDay(endDay,dates);
-    const days = document.getElementsByClassName("days");
+    
     let dateCnt=1;
     Array.from(days).forEach(day=>day.innerHTML="");
     for(let i=startDay; i<dates+startDay;i++){
@@ -73,7 +81,13 @@ function setDates() {
         days[i].appendChild(link);
         dateCnt++;
     }
+    if(days[35].innerHTML==""){
+        container.classList.add("shorten");
+    }else{
+        container.classList.remove("shorten");
+    }
 }
+
 function setYearAndMonth() {
     year_month.innerText = `${year}년 ${month}월`;
 }
