@@ -30,6 +30,7 @@ let showToDos = false;
 console.log(`year : ${year}, month : ${month}, day : ${day}, date : ${date}`);
 
 function handlePopUp(popUp){
+    // modal 화면 구현
     const popUpDoc = popUp.document;
     const popUpBody = popUpDoc.body;
 
@@ -93,11 +94,12 @@ function handleToDoBtnClick(){
     showToDos=!showToDos;
 }
 function handleAddToDoBtnClick(){
-    const url = "";
-    const name = "";
-    const option = "width=572px, height=640px, top=180px, left=1100px";
-    const popUp = window.open(url,name,option);
-    handlePopUp(popUp);
+    // modal 화면 구현
+    // const url = "";
+    // const name = "";
+    // const option = "width=572px, height=640px, top=180px, left=1100px";
+    // const popUp = window.open(url,name,option);
+    // handlePopUp(popUp);
 }
 function flip(event){
     if(frontOrBack){
