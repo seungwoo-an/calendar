@@ -10,6 +10,10 @@ body{
     background-color: #dfebed;
     box-sizing: border-box;
     color: rgba(0,0,0,0.5);
+    -ms-user-select: none; 
+  -khtml-user-select: none;
+  -webkit-user-select: none;
+  user-select: none;
 }
 #prevPointer, #postPointer{
     position: relative;
@@ -33,11 +37,11 @@ body{
 }
 
 #container{
-    transform: rotate(0deg);
+    transform: rotateY(0deg);
     width: 600px;
     height: 620px;
     /* justify-content: center; */
-    background-color: rgb(0, 191, 255,0.2);
+    background-color: rgba(0, 191, 255,0.2);
     border-radius: 5px;
 }
 #container.shorten{
@@ -46,14 +50,18 @@ body{
 #details{
     position: absolute;
     top:157px;
-    transform: rotate(0deg);
+    transform: rotateY(0deg);
     width: 600px;
     height: 550px;
-    background-color: rgb(0, 191, 255,0.2);
+    background-color: rgba(0, 191, 255,0.2);
     border-radius: 5px;
+    transform-style: preserve-3d;
+    transition: 0.6s;
 }
-#container.flipped, #details.flipped{
+#container.flipped,#details.flipped{
     transform: rotateY(180deg);
+    transform-style: preserve-3d;
+    transition: 0.6s;
 }
 #container, #details{
     backface-visibility: hidden;
@@ -126,34 +134,36 @@ a{
     font-weight: 800;
     border-bottom: 1px solid#dfebed;
 }
-#toDoList{
-    font-size: 20px;
+#toDoBtn{
     font-weight: 700;
-    margin: 40px 0;
-    padding-left: 22px;
+    margin: 40px 0 0 0;
+    padding: 20px 0 20px 22px;
+    background-color:  rgba(0, 191, 255,0.1);
 }
 ul li{
-    margin: 12px 15px;
+    margin: 17px 20px;
     font-size: 15px;
 }
-div#toDo{
-    padding-left: 20px;
-    height: 25px;
+div#addToDo{
+    margin-top: 40px;
+    padding: 20px 0 20px 22px;
     display: flex;
+    background-color:  rgb(0, 191, 255,0.1);
 }
-img.plus, img#showToDos{
+img.plus, img#showToDosImg{
     width: 20px;
     height: 20px;
     -webkit-filter: opacity(.5) drop-shadow(0 0 0 rgb(0, 191, 255,0.2));
     filter: opacity(.5) drop-shadow(0 0 0 rgb(0, 191, 255,0.2));
     cursor: pointer;
 }
-.addToDo{
-    height: 20x;
-}
-.addToDo label, #toDoList label{
+.addToDo label, #toDoBtn label{
     padding-top: 2px;
     cursor: pointer;
     font-weight: 700;
     font-size: 20px;
+    margin-left : 15px;
+}
+#toDoBtn.hidden li{
+    display: none;
 }

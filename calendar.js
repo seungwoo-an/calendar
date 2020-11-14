@@ -8,6 +8,10 @@ const days = document.getElementsByClassName("days");
 const container = document.getElementById("container");
 const details = document.getElementById("details");
 const selectedDate = document.getElementById("selectedDate");
+const toDoBtn = document.getElementById("toDoBtn");
+const addToDoBtn = document.getElementById("addToDo");
+const showToDosImg = document.getElementById("showToDosImg");
+
 const CURRENT_YEAR = today.getFullYear();
 const CURRENT_MONTH = today.getMonth() + 1;
 const CURRENT_DAY = dayOfWeek[today.getDay()];
@@ -17,26 +21,53 @@ let year = CURRENT_YEAR;
 let month = CURRENT_MONTH;
 let day = CURRENT_DAY;
 let date = CURRENT_DATE;
+let clickedDate;
 
 let frontOrBack = true;
+let showToDos = false;
 console.log(`year : ${year}, month : ${month}, day : ${day}, date : ${date}`);
 
+function getDetails(){
+    return localStorage.getItem(year+month+clickedDate);
+}
+function handleToDoBtnClick(){
+    let src;
+    if(!showToDos){
+        toDoBtn.classList.remove("hidden");
+        src="./images/up-arrow.png";
+    }else{
+        toDoBtn.classList.add("hidden");
+        src="./images/down-arrow.png";
+    }
+    showToDosImg.src=src;
+    showToDos=!showToDos;
+}
+function handleAddToDoBtnClick(){
+    const url = "";
+    const name = "";
+    const option = "toolbar=no, menubar=no, scrollbars=yes, resizable=no, width=400, height=400, top=300, left=500";
+    const popUp = window.open(url,name,option);
+    popUp.document.write("hello");
+}
 function flip(event){
     if(frontOrBack){
-        const clickedDate = event.target.innerText;
+        clickedDate = event.target.innerText;
         container.classList.add("flipped");
         details.classList.remove("flipped");
-        showDetails(clickedDate);
+        showDetails();
     }else{
         container.classList.remove("flipped");
         details.classList.add("flipped");
     }
     frontOrBack=!frontOrBack;
 }
-function showDetails(clickedDate) {
+function showDetails() {
     console.log(clickedDate);
-    selectedDate.innerText=`${year}년 ${month}월 ${clickedDate}일`
-}
+    selectedDate.innerText=`${year}년 ${month}월 ${clickedDate}일`;
+    console.log(getDetails());
+    toDoBtn.addEventListener("click",handleToDoBtnClick);
+    addToDoBtn.addEventListener("click",handleAddToDoBtnClick);
+}   
 function currentCheck() {
     return (CURRENT_YEAR == year && CURRENT_MONTH == month) ? true : false;
 }
