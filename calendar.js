@@ -12,6 +12,8 @@ const toDoBtn = document.getElementById("toDoBtn");
 const addToDoBtn = document.getElementById("addToDo");
 const showToDosImg = document.getElementById("showToDosImg");
 
+const BACKGROUND_COLOR="#dfebed";
+
 const CURRENT_YEAR = today.getFullYear();
 const CURRENT_MONTH = today.getMonth() + 1;
 const CURRENT_DAY = dayOfWeek[today.getDay()];
@@ -27,6 +29,54 @@ let frontOrBack = true;
 let showToDos = false;
 console.log(`year : ${year}, month : ${month}, day : ${day}, date : ${date}`);
 
+function handlePopUp(popUp){
+    const popUpDoc = popUp.document;
+    const popUpBody = popUpDoc.body;
+
+    const popUpContainer = popUpDoc.createElement("div");
+    const titleLabel = popUpDoc.createElement("div");
+    const contentLabel = popUpDoc.createElement("div");
+    const title = popUpDoc.createElement("input");
+    const content = popUpDoc.createElement("textarea");
+
+    titleLabel.innerText="제목";
+    contentLabel.innerText="내용";
+    content.innerText="내용을 입력하세요";
+
+    titleLabel.fontSize="20px";
+    
+    contentLabel.fontSize="20px";
+
+    title.type="text";
+    title.value="hello";
+    title.style.all="unset";
+    title.style.marginLeft="15px";
+    title.style.border=`1px solid ${BACKGROUND_COLOR}`;
+    
+    content.style.all="unset";
+    content.style.marginLeft="15px";
+    content.style.width="440px";
+    content.style.height="500px";
+    content.style.border=`1px solid ${BACKGROUND_COLOR}`;
+
+    popUpContainer.appendChild(titleLabel);
+    popUpContainer.appendChild(title);
+    popUpContainer.appendChild(contentLabel);
+    popUpContainer.appendChild(content);
+
+    popUpContainer.style.backgroundColor="rgba(0, 191, 255,0.2)";
+    popUpContainer.style.width="470px";
+    popUpContainer.style.height="580px";
+    popUpContainer.style.padding="20px 15px";
+
+
+    popUpBody.appendChild(popUpContainer);
+    popUpBody.style.backgroundColor=BACKGROUND_COLOR;
+    popUpBody.style.display="flex";
+    popUpBody.style.flexDirection="column";
+    popUpBody.style.alignItems="center";
+    popUpBody.style.color="rgb(0,0,0,0.5)";
+}
 function getDetails(){
     return localStorage.getItem(year+month+clickedDate);
 }
@@ -45,9 +95,9 @@ function handleToDoBtnClick(){
 function handleAddToDoBtnClick(){
     const url = "";
     const name = "";
-    const option = "toolbar=no, menubar=no, scrollbars=yes, resizable=no, width=400, height=400, top=300, left=500";
+    const option = "width=572px, height=640px, top=180px, left=1100px";
     const popUp = window.open(url,name,option);
-    popUp.document.write("hello");
+    handlePopUp(popUp);
 }
 function flip(event){
     if(frontOrBack){
