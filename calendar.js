@@ -4,6 +4,7 @@ const date_day = document.getElementById("date_day");
 const dayOfWeek = ["일요일", "월요일", "화요일", "수요일", "목요일", "금요일", "토요일"];
 const prev = document.getElementById("prev");
 const post = document.getElementById("post");
+const backArrow = document.getElementById("backArrow");
 const days = document.getElementsByClassName("days");
 const container = document.getElementById("container");
 const details = document.getElementById("details");
@@ -11,8 +12,10 @@ const selectedDate = document.getElementById("selectedDate");
 const toDoBtn = document.getElementById("toDoBtn");
 const addToDoBtn = document.getElementById("addToDo");
 const showToDosImg = document.getElementById("showToDosImg");
-
-const BACKGROUND_COLOR="#dfebed";
+const modal = document.getElementById("modal");
+const modalBackground = document.getElementById("modalBackground");
+const save = document.getElementById("save");
+const cancel = document.getElementById("cancel");
 
 const CURRENT_YEAR = today.getFullYear();
 const CURRENT_MONTH = today.getMonth() + 1;
@@ -29,131 +32,125 @@ let frontOrBack = true;
 let showToDos = false;
 console.log(`year : ${year}, month : ${month}, day : ${day}, date : ${date}`);
 
-function handlePopUp(popUp){
-    // modal 화면 구현
-    const popUpDoc = popUp.document;
-    const popUpBody = popUpDoc.body;
+function refreshToDo() {
+    const toDos = getDetails();
+    const ul_lis = Array.from(toDoBtn.getElementsByTagName("li"));
 
-    const popUpContainer = popUpDoc.createElement("div");
-    const titleLabel = popUpDoc.createElement("div");
-    const contentLabel = popUpDoc.createElement("div");
-    const title = popUpDoc.createElement("input");
-    const content = popUpDoc.createElement("textarea");
-
-    titleLabel.innerText="제목";
-    contentLabel.innerText="내용";
-    content.innerText="내용을 입력하세요";
-
-    titleLabel.fontSize="20px";
-    
-    contentLabel.fontSize="20px";
-
-    title.type="text";
-    title.value="hello";
-    title.style.all="unset";
-    title.style.marginLeft="15px";
-    title.style.border=`1px solid ${BACKGROUND_COLOR}`;
-    
-    content.style.all="unset";
-    content.style.marginLeft="15px";
-    content.style.width="440px";
-    content.style.height="500px";
-    content.style.border=`1px solid ${BACKGROUND_COLOR}`;
-
-    popUpContainer.appendChild(titleLabel);
-    popUpContainer.appendChild(title);
-    popUpContainer.appendChild(contentLabel);
-    popUpContainer.appendChild(content);
-
-    popUpContainer.style.backgroundColor="rgba(0, 191, 255,0.2)";
-    popUpContainer.style.width="470px";
-    popUpContainer.style.height="580px";
-    popUpContainer.style.padding="20px 15px";
-
-
-    popUpBody.appendChild(popUpContainer);
-    popUpBody.style.backgroundColor=BACKGROUND_COLOR;
-    popUpBody.style.display="flex";
-    popUpBody.style.flexDirection="column";
-    popUpBody.style.alignItems="center";
-    popUpBody.style.color="rgb(0,0,0,0.5)";
-}
-function getDetails(){
-    return localStorage.getItem(year+month+clickedDate);
-}
-function handleToDoBtnClick(){
-    let src;
-    if(!showToDos){
-        toDoBtn.classList.remove("hidden");
-        src="./images/up-arrow.png";
-    }else{
-        toDoBtn.classList.add("hidden");
-        src="./images/down-arrow.png";
+    if (ul_lis.length != 0) {
+        ul_lis.forEach(function (li) {
+            toDoBtn.removeChild(li);
+        });
     }
-    showToDosImg.src=src;
-    showToDos=!showToDos;
+    if (toDos) {
+        toDos.forEach(function (toDo) {
+            const a = document.createElement("a");
+            const li = document.createElement("li");
+            a.innerText = toDo.title;
+            li.appendChild(a);
+            toDoBtn.appendChild(li);
+        });
+    } else {
+        const li = document.createElement("li");
+        li.innerText = "등록된 일정이 없습니다.";
+        toDoBtn.appendChild(li);
+    }
 }
-function handleAddToDoBtnClick(){
-    // modal 화면 구현
-    // const url = "";
-    // const name = "";
-    // const option = "width=572px, height=640px, top=180px, left=1100px";
-    // const popUp = window.open(url,name,option);
-    // handlePopUp(popUp);
+function getDetails() {
+    return JSON.parse(localStorage.getItem(year + month + clickedDate));
 }
-function flip(event){
-    if(frontOrBack){
+function handleToDoBtnClick() {
+    let src;
+    if (!showToDos) {
+        toDoBtn.classList.remove("hidden");
+        src = "./images/up-arrow.png";
+        refreshToDo();
+    } else {
+        toDoBtn.classList.add("hidden");
+        src = "./images/down-arrow.png";
+    }
+    showToDosImg.src = src;
+    showToDos = !showToDos;
+}
+function closeModal(event) {
+    const id = event.target.id;
+    if (id == "save") {
+        console.log("세이브 ㄱㄱ");
+        const title = document.querySelector(".title input").value;
+        const content = document.querySelector(".content textarea").value;
+        if (title && content) {
+            const toDo = {
+                title, content
+            }
+            let data = getDetails();
+            if (data == null) {
+                data = [toDo];
+            } else {
+                data.push(toDo);
+            }
+            localStorage.setItem(year + month + clickedDate, JSON.stringify(data));
+        }
+    }
+    modal.classList.add("hidden");
+    modalBackground.classList.add("hidden");
+}
+function handleAddToDoBtnClick() {
+    modal.classList.remove("hidden");
+    modalBackground.classList.remove("hidden");
+}
+function flip(event) {
+    if (frontOrBack) {
         clickedDate = event.target.innerText;
         container.classList.add("flipped");
         details.classList.remove("flipped");
         showDetails();
-    }else{
+    } else {
         container.classList.remove("flipped");
         details.classList.add("flipped");
     }
-    frontOrBack=!frontOrBack;
+    frontOrBack = !frontOrBack;
 }
 function showDetails() {
-    console.log(clickedDate);
-    selectedDate.innerText=`${year}년 ${month}월 ${clickedDate}일`;
-    console.log(getDetails());
-    toDoBtn.addEventListener("click",handleToDoBtnClick);
-    addToDoBtn.addEventListener("click",handleAddToDoBtnClick);
-}   
+    selectedDate.innerText = `${year}년 ${month}월 ${clickedDate}일`;
+    toDoBtn.addEventListener("click", handleToDoBtnClick);
+    addToDoBtn.addEventListener("click", handleAddToDoBtnClick);
+}
 function currentCheck() {
     return (CURRENT_YEAR == year && CURRENT_MONTH == month) ? true : false;
 }
-prev.addEventListener("click", function () {
-    month--;
-    if (month < 1) {
-        month = 12;
-        year--;
+function handlePrevClick() {
+    if (frontOrBack) {
+        month--;
+        if (month < 1) {
+            month = 12;
+            year--;
+        }
+        if (currentCheck()) {
+            date_day.classList.remove("hidden");
+            year_month.classList.remove("padded");
+        } else {
+            year_month.classList.add("padded");
+            date_day.classList.add("hidden");
+        }
+        refreshDate();
     }
-    if (currentCheck()) {
-        date_day.classList.remove("hidden");
-        year_month.classList.remove("padded");
-    } else {
-        year_month.classList.add("padded");
-        date_day.classList.add("hidden");
+};
+function handlePostClick() {
+    if (frontOrBack) {
+        month++;
+        if (month > 12) {
+            month = 1;
+            year++;
+        }
+        if (currentCheck()) {
+            date_day.classList.remove("hidden");
+            year_month.classList.remove("padded");
+        } else {
+            year_month.classList.add("padded");
+            date_day.classList.add("hidden");
+        }
+        refreshDate();
     }
-    init();
-});
-post.addEventListener("click", function () {
-    month++;
-    if (month > 12) {
-        month = 1;
-        year++;
-    }
-    if (currentCheck()) {
-        date_day.classList.remove("hidden");
-        year_month.classList.remove("padded");
-    } else {
-        year_month.classList.add("padded");
-        date_day.classList.add("hidden");
-    }
-
-    init();
-});
+};
 
 function getStartDay(endDay, dates) {
     const startDay = (endDay - (dates % 7 - 1) < 0) ? endDay - (dates % 7 - 1) + 6 : endDay - (dates % 7 - 1);
@@ -218,9 +215,19 @@ function setYearAndMonth() {
 function setDateAndDay() {
     date_day.innerText = `${date}일 ${day}`;
 }
-function init() {
+function refreshDate() {
     setYearAndMonth();
     setDateAndDay();
     setDates();
+
+}
+function init() {
+    refreshDate();
+    if (modalBackground) modalBackground.addEventListener("click", closeModal);
+    if (save) save.addEventListener("click", closeModal);
+    if (cancel) cancel.addEventListener("click", closeModal);
+    if (backArrow) backArrow.addEventListener("click", flip);
+    if (prev) prev.addEventListener("click", handlePrevClick);
+    if (post) post.addEventListener("click", handlePostClick);
 }
 init();
