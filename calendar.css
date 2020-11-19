@@ -24,7 +24,7 @@ body{
     -webkit-filter: opacity(.5) drop-shadow(0 0 0 rgb(0, 191, 255,0.2));
     filter: opacity(.5) drop-shadow(0 0 0 rgb(0, 191, 255,0.2));
 }
-#prevPointer img:active, #postPointer img:active, img#backArrow:active, img#plus:active, img#showToDosImg:active, button#save:active, button#cancel:active{
+#prevPointer img:active, #postPointer img:active, img#backArrow:active, img#plus:active, img#toDoImg:active, button#save:active, button#cancel:active{
     transform: scale(0.9);
 }
 #prevPointer{
@@ -142,14 +142,14 @@ a{
     font-size: 25px;
     border-bottom: 1px solid white;
 }
-#toDoBtn{
+#toDoUl{
     font-weight: 700;
     margin: 40px 0 0 0;
     padding: 20px 0 20px 22px;
     background-color:  rgba(250, 202, 202);
 }
 ul li{
-    margin: 17px 20px;
+    margin: 25px 20px 15px 20px;
     font-size: 15px;
 }
 div#addToDo{
@@ -158,21 +158,21 @@ div#addToDo{
     display: flex;
     background-color:  rgb(250, 202, 202);
 }
-img.plus, img#showToDosImg{
+img.plus, img#toDoImg{
     width: 20px;
     height: 20px;
     -webkit-filter: opacity(.5) drop-shadow(0 0 0 rgb(0, 191, 255,0.2));
     filter: opacity(.5) drop-shadow(0 0 0 rgb(0, 191, 255,0.2));
     cursor: pointer;
 }
-.addToDo label, #toDoBtn label{
+.addToDo label, #toDoUl label{
     padding-top: 2px;
     cursor: pointer;
     font-weight: 700;
     font-size: 20px;
     margin-left : 15px;
 }
-#toDoBtn.hidden li{
+#toDoUl.hidden li{
     display: none;
 }
 #modalBackground{
@@ -182,14 +182,13 @@ img.plus, img#showToDosImg{
     background-color: rgb(0,0,0,0.1);
 }
 div#modal{
+    display: block;
     position: absolute;
     background-color: rgb(250, 202, 202);
     width: 730px;
     height: 770px;
     top: 80px;
     border-radius: 5px;
-    animation: fade-in 0.8s;
-    animation-fill-mode:forwards;
 }
 div#modal.hidden, #modalBackground.hidden{
     display: none;

@@ -9,9 +9,10 @@ const days = document.getElementsByClassName("days");
 const container = document.getElementById("container");
 const details = document.getElementById("details");
 const selectedDate = document.getElementById("selectedDate");
-const toDoBtn = document.getElementById("toDoBtn");
+const toDoUl = document.getElementById("toDoUl");
 const addToDoBtn = document.getElementById("addToDo");
-const showToDosImg = document.getElementById("showToDosImg");
+const toDoImg = document.getElementById("toDoImg");
+const toDoLabel = document.querySelector("#toDoUl label");
 const modal = document.getElementById("modal");
 const modalBackground = document.getElementById("modalBackground");
 const save = document.getElementById("save");
@@ -32,43 +33,45 @@ let frontOrBack = true;
 let showToDos = false;
 console.log(`year : ${year}, month : ${month}, day : ${day}, date : ${date}`);
 
-function refreshToDo() {
-    const toDos = getDetails();
-    const ul_lis = Array.from(toDoBtn.getElementsByTagName("li"));
-
+function refreshUl(){
+    const ul_lis = Array.from(toDoUl.getElementsByTagName("li"));
     if (ul_lis.length != 0) {
         ul_lis.forEach(function (li) {
-            toDoBtn.removeChild(li);
+            toDoUl.removeChild(li);
         });
     }
+}
+function addToDos() {
+    refreshUl();
+    const toDos = getDetails();
     if (toDos) {
         toDos.forEach(function (toDo) {
             const a = document.createElement("a");
             const li = document.createElement("li");
             a.innerText = toDo.title;
             li.appendChild(a);
-            toDoBtn.appendChild(li);
+            toDoUl.appendChild(li);
         });
     } else {
         const li = document.createElement("li");
         li.innerText = "등록된 일정이 없습니다.";
-        toDoBtn.appendChild(li);
+        toDoUl.appendChild(li);
     }
 }
 function getDetails() {
     return JSON.parse(localStorage.getItem(year + month + clickedDate));
 }
-function handleToDoBtnClick() {
+function handleToDoClick() {
     let src;
     if (!showToDos) {
-        toDoBtn.classList.remove("hidden");
+        toDoUl.classList.remove("hidden");
         src = "./images/up-arrow.png";
-        refreshToDo();
     } else {
-        toDoBtn.classList.add("hidden");
+        toDoUl.classList.add("hidden");
         src = "./images/down-arrow.png";
     }
-    showToDosImg.src = src;
+    addToDos();
+    toDoImg.src = src;
     showToDos = !showToDos;
 }
 function closeModal(event) {
@@ -102,6 +105,8 @@ function flip(event) {
         clickedDate = event.target.innerText;
         container.classList.add("flipped");
         details.classList.remove("flipped");
+        showToDos=false;
+        toDoImg.src="images/down-arrow.png";
         showDetails();
     } else {
         container.classList.remove("flipped");
@@ -111,8 +116,7 @@ function flip(event) {
 }
 function showDetails() {
     selectedDate.innerText = `${year}년 ${month}월 ${clickedDate}일`;
-    toDoBtn.addEventListener("click", handleToDoBtnClick);
-    addToDoBtn.addEventListener("click", handleAddToDoBtnClick);
+    refreshUl();
 }
 function currentCheck() {
     return (CURRENT_YEAR == year && CURRENT_MONTH == month) ? true : false;
@@ -153,7 +157,11 @@ function handlePostClick() {
 };
 
 function getStartDay(endDay, dates) {
-    const startDay = (endDay - (dates % 7 - 1) < 0) ? endDay - (dates % 7 - 1) + 6 : endDay - (dates % 7 - 1);
+    console.log("endDay : " + endDay)
+    console.log("dates : " + dates)
+    const dayGap = dates%7-1;
+    const startDay = (endDay-dayGap<0)?endDay-dayGap+7:endDay-dayGap;
+    console.log("startDay : " + startDay);
     return startDay;
 }
 function getDates(month) {
@@ -229,5 +237,8 @@ function init() {
     if (backArrow) backArrow.addEventListener("click", flip);
     if (prev) prev.addEventListener("click", handlePrevClick);
     if (post) post.addEventListener("click", handlePostClick);
+    toDoLabel.addEventListener("click",handleToDoClick);
+    toDoImg.addEventListener("click", handleToDoClick);
+    addToDoBtn.addEventListener("click", handleAddToDoBtnClick);
 }
 init();
