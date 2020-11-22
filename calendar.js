@@ -41,15 +41,37 @@ function refreshUl(){
         });
     }
 }
+function handleDelBtnClick(event){
+    const delBtn = event.target;
+    const delTarget = delBtn.parentNode.querySelector("font").innerText;
+    const data = getDetails(clickedDate);
+    data.forEach(function(toDo){
+        if(delTarget==toDo.toDoNum){
+            data.splice(data.indexOf(toDo),1);
+            console.log(data);
+            saveDetails(data);
+        }
+    });
+    delBtn.parentNode.remove();
+}
 function addToDos() {
     refreshUl();
-    const toDos = getDetails();
-    if (toDos) {
+    const toDos = getDetails(clickedDate);
+    if (toDos!=null && toDos.length!=0) {
         toDos.forEach(function (toDo) {
+            const toDoNum = document.createElement("font");
             const a = document.createElement("a");
             const li = document.createElement("li");
+            const delBtn = document.createElement("button");
+            toDoNum.innerText = toDo.toDoNum;
+            toDoNum.style.display="none";
+            delBtn.classList.add("delBtn");
+            delBtn.innerText="❌";
+            delBtn.addEventListener("click",handleDelBtnClick);
             a.innerText = toDo.title;
+            li.appendChild(toDoNum);
             li.appendChild(a);
+            li.appendChild(delBtn);
             toDoUl.appendChild(li);
         });
     } else {
@@ -58,8 +80,8 @@ function addToDos() {
         toDoUl.appendChild(li);
     }
 }
-function getDetails() {
-    return JSON.parse(localStorage.getItem(year + month + clickedDate));
+function getDetails(date) {
+    return JSON.parse(localStorage.getItem(year + month+date.toString()));
 }
 function handleToDoClick() {
     let src;
@@ -74,25 +96,33 @@ function handleToDoClick() {
     toDoImg.src = src;
     showToDos = !showToDos;
 }
+function saveDetails(data){
+    localStorage.setItem(year + month + clickedDate, JSON.stringify(data));
+}
 function closeModal(event) {
     const id = event.target.id;
+    title = document.querySelector(".title input").value;
+    content = document.querySelector(".content textarea").value;
     if (id == "save") {
-        console.log("세이브 ㄱㄱ");
-        const title = document.querySelector(".title input").value;
-        const content = document.querySelector(".content textarea").value;
-        if (title && content) {
+        if (title) {
             const toDo = {
+                toDoNum : 1,
                 title, content
             }
-            let data = getDetails();
-            if (data == null) {
+            let data = getDetails(clickedDate);
+            console.log(data);
+            if (data == null || data.length==0) {
                 data = [toDo];
             } else {
+                toDo.toDoNum=data[data.length-1].toDoNum+1;
                 data.push(toDo);
             }
-            localStorage.setItem(year + month + clickedDate, JSON.stringify(data));
+            saveDetails(data);
+            
         }
     }
+    document.querySelector(".title input").value="";
+    document.querySelector(".content textarea").value="";
     modal.classList.add("hidden");
     modalBackground.classList.add("hidden");
 }
@@ -111,6 +141,7 @@ function flip(event) {
     } else {
         container.classList.remove("flipped");
         details.classList.add("flipped");
+        setDates();
     }
     frontOrBack = !frontOrBack;
 }
@@ -195,7 +226,10 @@ function setDates() {
     const startDay = getStartDay(endDay, dates);
 
     let dateCnt = 1;
-    Array.from(days).forEach(day => day.innerHTML = "");
+    Array.from(days).forEach(function(day){
+        day.innerHTML="";
+        day.classList.remove("daysWithToDo");
+    })
     for (let i = startDay; i < dates + startDay; i++) {
         const link = document.createElement("a");
         link.innerText = dateCnt;
@@ -208,6 +242,8 @@ function setDates() {
         }
         days[i].id = days_id;
         days[i].appendChild(link);
+        const data = getDetails(dateCnt);
+        if(data!=null&&data.length!=0)days[i].classList.add("daysWithToDo");
         dateCnt++;
     }
     if (days[35].innerHTML == "") {
