@@ -17,7 +17,7 @@ const modal = document.getElementById("modal");
 const modalBackground = document.getElementById("modalBackground");
 const save = document.getElementById("save");
 const cancel = document.getElementById("cancel");
-
+const toDoDetail = document.getElementById("toDoDetail");
 const CURRENT_YEAR = today.getFullYear();
 const CURRENT_MONTH = today.getMonth() + 1;
 const CURRENT_DAY = dayOfWeek[today.getDay()];
@@ -32,7 +32,27 @@ let clickedDate;
 let frontOrBack = true;
 let showToDos = false;
 console.log(`year : ${year}, month : ${month}, day : ${day}, date : ${date}`);
-
+function closeToDo(){
+    toDoDetail.classList.add("hidden");
+}
+function showToDo(toDoNum){
+    const data = getDetails(clickedDate)
+    const toDoTitle = document.querySelector("#toDoDetail h1");
+    const toDoContent = document.querySelector("#toDoDetail p");
+    data.forEach(function(data){
+        if(data.toDoNum==toDoNum){
+            const title = data.title;
+            const content = data.content;
+            toDoTitle.innerText=title;
+            toDoContent.innerText=content;
+            toDoDetail.classList.remove("hidden");
+        }
+    });
+}
+function handleTitleClick(event){
+    const clickedToDoNum = event.target.parentNode.querySelector("font").innerText;
+    showToDo(clickedToDoNum);
+}
 function refreshUl(){
     const ul_lis = Array.from(toDoUl.getElementsByTagName("li"));
     if (ul_lis.length != 0) {
@@ -69,6 +89,7 @@ function addToDos() {
             delBtn.innerText="❌";
             delBtn.addEventListener("click",handleDelBtnClick);
             a.innerText = toDo.title;
+            a.addEventListener("click",handleTitleClick);
             li.appendChild(toDoNum);
             li.appendChild(a);
             li.appendChild(delBtn);
@@ -273,6 +294,7 @@ function init() {
     if (backArrow) backArrow.addEventListener("click", flip);
     if (prev) prev.addEventListener("click", handlePrevClick);
     if (post) post.addEventListener("click", handlePostClick);
+    if(toDoDetail)toDoDetail.addEventListener("click",closeToDo)
     toDoLabel.addEventListener("click",handleToDoClick);
     toDoImg.addEventListener("click", handleToDoClick);
     addToDoBtn.addEventListener("click", handleAddToDoBtnClick);
