@@ -1,3 +1,4 @@
+(()=>{
 const today = new Date();
 const year_month = document.getElementById("year_month");
 const date_day = document.getElementById("date_day");
@@ -18,6 +19,8 @@ const modalBackground = document.getElementById("modalBackground");
 const save = document.getElementById("save");
 const cancel = document.getElementById("cancel");
 const toDoDetail = document.getElementById("toDoDetail");
+const update = document.getElementById("update");
+
 const CURRENT_YEAR = today.getFullYear();
 const CURRENT_MONTH = today.getMonth() + 1;
 const CURRENT_DAY = dayOfWeek[today.getDay()];
@@ -32,6 +35,7 @@ let clickedDate;
 let frontOrBack = true;
 let showToDos = false;
 console.log(`year : ${year}, month : ${month}, day : ${day}, date : ${date}`);
+
 function closeToDo(){
     toDoDetail.classList.add("hidden");
 }
@@ -120,34 +124,34 @@ function handleToDoClick() {
 function saveDetails(data){
     localStorage.setItem(year + month + clickedDate, JSON.stringify(data));
 }
-function closeModal(event) {
-    const id = event.target.id;
+function handleSaveClick(){
     title = document.querySelector(".title input").value;
     content = document.querySelector(".content textarea").value;
-    if (id == "save") {
-        if (title) {
-            const toDo = {
-                toDoNum : 1,
-                title, content
-            }
-            let data = getDetails(clickedDate);
-            console.log(data);
-            if (data == null || data.length==0) {
-                data = [toDo];
-            } else {
-                toDo.toDoNum=data[data.length-1].toDoNum+1;
-                data.push(toDo);
-            }
-            saveDetails(data);
-            
+    if (title) {
+        const toDo = {
+            toDoNum : 1,
+            title, content
         }
+        let data = getDetails(clickedDate);
+        console.log(data);
+        if (data == null || data.length==0) {
+            data = [toDo];
+        } else {
+            toDo.toDoNum=data[data.length-1].toDoNum+1;
+            data.push(toDo);
+        }
+        saveDetails(data);
     }
+    closeModal();
+
+}
+function closeModal() {
     document.querySelector(".title input").value="";
     document.querySelector(".content textarea").value="";
     modal.classList.add("hidden");
     modalBackground.classList.add("hidden");
 }
-function handleAddToDoBtnClick() {
+function openModal() {
     modal.classList.remove("hidden");
     modalBackground.classList.remove("hidden");
 }
@@ -255,13 +259,13 @@ function setDates() {
         const link = document.createElement("a");
         link.innerText = dateCnt;
         link.addEventListener("click", flip);
-        let days_id = "";
+        let link_id = "";
         if (currentCheck() && CURRENT_DATE == dateCnt) {
-            days_id = "currentDate";
+            link_id = "currentDate";
         } else {
-            days_id = "";
+            link_id = "";
         }
-        days[i].id = days_id;
+        link.id = link_id;
         days[i].appendChild(link);
         const data = getDetails(dateCnt);
         if(data!=null&&data.length!=0)days[i].classList.add("daysWithToDo");
@@ -289,14 +293,16 @@ function refreshDate() {
 function init() {
     refreshDate();
     if (modalBackground) modalBackground.addEventListener("click", closeModal);
-    if (save) save.addEventListener("click", closeModal);
+    if (save) save.addEventListener("click", handleSaveClick);
     if (cancel) cancel.addEventListener("click", closeModal);
     if (backArrow) backArrow.addEventListener("click", flip);
     if (prev) prev.addEventListener("click", handlePrevClick);
     if (post) post.addEventListener("click", handlePostClick);
     if(toDoDetail)toDoDetail.addEventListener("click",closeToDo)
+    if(update)update.addEventListener("click",openModal)
     toDoLabel.addEventListener("click",handleToDoClick);
     toDoImg.addEventListener("click", handleToDoClick);
-    addToDoBtn.addEventListener("click", handleAddToDoBtnClick);
+    addToDoBtn.addEventListener("click", openModal);
 }
 init();
+})();
