@@ -1,2 +1,2 @@
 # calendar
-calendar app with javascript
+calendar app with javascript.
