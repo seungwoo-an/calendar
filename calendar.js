@@ -106,7 +106,7 @@ function addToDos() {
     }
 }
 function getDetails(date) {
-    return JSON.parse(localStorage.getItem(year + month+date.toString()));
+    return JSON.parse(localStorage.getItem(`${year}${month}${date}`));
 }
 function handleToDoClick() {
     let src;
@@ -122,7 +122,7 @@ function handleToDoClick() {
     showToDos = !showToDos;
 }
 function saveDetails(data){
-    localStorage.setItem(year + month + clickedDate, JSON.stringify(data));
+    localStorage.setItem(`${year}${month}${clickedDate}`, JSON.stringify(data));
 }
 function handleSaveClick(){
     title = document.querySelector(".title input").value;
@@ -153,6 +153,7 @@ function closeModal() {
 function openModal() {
     modal.classList.remove("hidden");
     modalBackground.classList.remove("hidden");
+    document.querySelector(".title input").focus();
 }
 function flip(event) {
     if (frontOrBack) {
@@ -298,6 +299,7 @@ function init() {
     toDoLabel.addEventListener("click",handleToDoClick);
     toDoImg.addEventListener("click", handleToDoClick);
     addToDoBtn.addEventListener("click", openModal);
+
 }
 init();
 })();
