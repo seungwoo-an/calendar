@@ -19,7 +19,6 @@ const modalBackground = document.getElementById("modalBackground");
 const save = document.getElementById("save");
 const cancel = document.getElementById("cancel");
 const toDoDetail = document.getElementById("toDoDetail");
-const update = document.getElementById("update");
 
 const CURRENT_YEAR = today.getFullYear();
 const CURRENT_MONTH = today.getMonth() + 1;
@@ -32,21 +31,23 @@ let day = CURRENT_DAY;
 let date = CURRENT_DATE;
 let clickedDate;
 
+let title;
+let content;
+
 let frontOrBack = true;
 let showToDos = false;
-console.log(`year : ${year}, month : ${month}, day : ${day}, date : ${date}`);
 
 function closeToDo(){
     toDoDetail.classList.add("hidden");
 }
 function showToDo(toDoNum){
-    const data = getDetails(clickedDate)
+    const data = getDetails(clickedDate);
     const toDoTitle = document.querySelector("#toDoDetail h1");
     const toDoContent = document.querySelector("#toDoDetail p");
     data.forEach(function(data){
         if(data.toDoNum==toDoNum){
-            const title = data.title;
-            const content = data.content;
+            title = data.title;
+            content = data.content;
             toDoTitle.innerText=title;
             toDoContent.innerText=content;
             toDoDetail.classList.remove("hidden");
@@ -72,7 +73,6 @@ function handleDelBtnClick(event){
     data.forEach(function(toDo){
         if(delTarget==toDo.toDoNum){
             data.splice(data.indexOf(toDo),1);
-            console.log(data);
             saveDetails(data);
         }
     });
@@ -133,7 +133,6 @@ function handleSaveClick(){
             title, content
         }
         let data = getDetails(clickedDate);
-        console.log(data);
         if (data == null || data.length==0) {
             data = [toDo];
         } else {
@@ -213,11 +212,8 @@ function handlePostClick() {
 };
 
 function getStartDay(endDay, dates) {
-    console.log("endDay : " + endDay)
-    console.log("dates : " + dates)
     const dayGap = dates%7-1;
     const startDay = (endDay-dayGap<0)?endDay-dayGap+7:endDay-dayGap;
-    console.log("startDay : " + startDay);
     return startDay;
 }
 function getDates(month) {
@@ -299,7 +295,6 @@ function init() {
     if (prev) prev.addEventListener("click", handlePrevClick);
     if (post) post.addEventListener("click", handlePostClick);
     if(toDoDetail)toDoDetail.addEventListener("click",closeToDo)
-    if(update)update.addEventListener("click",openModal)
     toDoLabel.addEventListener("click",handleToDoClick);
     toDoImg.addEventListener("click", handleToDoClick);
     addToDoBtn.addEventListener("click", openModal);
